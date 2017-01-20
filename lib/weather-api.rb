@@ -82,8 +82,12 @@ module Weather
         raise "Failed to get weather [url=#{url}, e=#{e}]."
       end
 
-      response = Map.new(JSON.parse(response))[:query][:results][:channel]
-
+	  begin
+        response = Map.new(JSON.parse(response))[:query][:results][:channel]
+	  rescue => e
+	    raise "Error parsing yahoo weather response [e=#{e}, response=#{response}]."
+	  end
+	  
       if response.nil? || !response.respond_to?(:title) || response.title.match(/error/i)
         raise "Failed to get weather [url=#{url}]."
       end
